@@ -9,7 +9,8 @@
   "scripts": {
     "build": "rimraf dist && NODE_ENV=production rollup -c && npm run build:types",
     "build:types": "rimraf dist/types && tsc --project ./tsconfig.json && replace 'import type' 'import' ./dist/types -r --silent && replace 'export type' 'export' ./dist/types -r --silent && replace 'lib/' '../' ./dist/types/*/*.* -r --silent && replace 'lib/' './' ./dist/types -r --silent",
-    "dev": "rollup -c -w"
+    "dev": "rollup -c -w",
+    "prepare": "husky install"
   },
   "author": "Dawid Zajac <zajdawid@protonmail.com>",
   "license": "MIT",
@@ -17,6 +18,8 @@
     "react": "^16.8.0 || ^17.0.0 || ^18.0.0"
   },
   "devDependencies": {
+    "@commitlint/cli": "^17.3.0",
+    "@commitlint/config-conventional": "^17.3.0",
     "@rollup/plugin-node-resolve": "^15.0.1",
     "@types/node": "^18.11.18",
     "@types/react": "^18.0.26",
@@ -31,6 +34,7 @@
     "eslint-plugin-jsx-a11y": "^6.6.1",
     "eslint-plugin-react": "^7.31.11",
     "eslint-plugin-react-hooks": "^4.6.0",
+    "husky": "^8.0.2",
     "prettier": "^2.8.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
