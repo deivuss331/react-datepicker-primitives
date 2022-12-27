@@ -1,0 +1,32 @@
+{
+  "name": "react-datepicker-primitives",
+  "version": "0.1.0",
+  "description": "",
+  "main": "dist/react-datepicker-primitives.min.js",
+  "module": "dist/react-datepicker-primitives.esm.js",
+  "browser": "dist/react-datepicker-primitives.umd.js",
+  "types": "dist/types/index.d.ts",
+  "scripts": {
+    "build": "rimraf dist && NODE_ENV=production rollup -c && npm run build:types",
+    "build:types": "rimraf dist/types && tsc --project ./tsconfig.json && replace 'import type' 'import' ./dist/types -r --silent && replace 'export type' 'export' ./dist/types -r --silent && replace 'lib/' '../' ./dist/types/*/*.* -r --silent && replace 'lib/' './' ./dist/types -r --silent",
+    "dev": "rollup -c -w"
+  },
+  "author": "Dawid Zajac <zajdawid@protonmail.com>",
+  "license": "MIT",
+  "peerDependencies": {
+    "react": "^16.8.0 || ^17.0.0 || ^18.0.0"
+  },
+  "devDependencies": {
+    "@rollup/plugin-node-resolve": "^15.0.1",
+    "rimraf": "^3.0.2",
+    "rollup": "^3.8.1",
+    "rollup-plugin-commonjs": "^10.1.0",
+    "rollup-plugin-json": "^4.0.0",
+    "rollup-plugin-license": "^3.0.1",
+    "rollup-plugin-peer-deps-external": "^2.2.4",
+    "rollup-plugin-terser": "^7.0.2",
+    "rollup-plugin-typescript": "^1.0.1",
+    "tslib": "^2.4.1",
+    "typescript": "^4.9.4"
+  }
+}
