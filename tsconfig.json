@@ -20,7 +20,7 @@
     "declarationDir": "dist/types",
     "emitDeclarationOnly": true,
     "noEmit": false,
-    "jsx": "react",
+    "jsx": "react-jsx",
     "esModuleInterop": true,
     "skipLibCheck": true,
     "baseUrl": "./"
