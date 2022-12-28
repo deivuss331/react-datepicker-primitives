@@ -4,7 +4,7 @@ The goal of this project is to build react datepicker primitive components (or h
 * be easy to use
 * be easy to style
 * be easy to configure
-* be a11y friendly
+* be a11y friendly (follow this guide: https://www.w3.org/WAI/ARIA/apg/example-index/dialog-modal/datepicker-dialog)
 * let developers configure html structure
 
 ---
@@ -13,3 +13,7 @@ Pickers will be most-likely separated from RangePickers. This is done intentiona
 Think of situation when you're creating simple DatePicker so `date` might be either type of `Date` or `null`.
 If Pickers wouldn't be separated from RangePickers then possible types would be: `Date` | `Date[]` | `null`.
 We could possibly consider creating one variant which could accept mode (`picker` | `rangePicker`) which could set correct types...
+
+--- 
+
+Doesn't support IE11
