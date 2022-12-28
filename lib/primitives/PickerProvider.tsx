@@ -1,11 +1,15 @@
 import type { ReactNode, Dispatch, SetStateAction } from 'react';
 import { useState, useMemo, useContext, createContext } from 'react';
-import { __DEV_MODE__ } from 'lib/constants';
+import { __DEV_MODE__, PickerLayouts } from 'lib/constants';
+
+const DEFAULT_LAYOUT = PickerLayouts.SINGLE_MONTH;
 
 interface PickerProviderCtxValue {
-  date: Date | null;
-  setDate: Dispatch<SetStateAction<PickerProviderCtxValue['date']>>;
-  mode: 'days' | 'months' | 'years';
+  selectedDate: Date | null;
+  setSelectedDate: Dispatch<SetStateAction<PickerProviderCtxValue['selectedDate']>>;
+  rangeDate: Date;
+  setRangeDate: Dispatch<SetStateAction<PickerProviderCtxValue['rangeDate']>>;
+  layout: PickerLayouts;
 }
 
 const ProviderContext = createContext<PickerProviderCtxValue | null>(null);
@@ -15,19 +19,22 @@ if (__DEV_MODE__) {
 }
 
 interface ProviderProps {
-  children: ReactNode;
+  children: ReactNode | ReactNode[];
 }
 
 export default function PickerProvider({ children }: ProviderProps) {
-  const [date, setDate] = useState(new Date());
+  const [selectedDate, setSelectedDate] = useState(new Date());
+  const [rangeDate, setRangeDate] = useState(new Date());
+
   const value = useMemo(
-    () =>
-      ({
-        date,
-        setDate,
-        mode: 'days',
-      } as const),
-    [date],
+    () => ({
+      selectedDate,
+      setSelectedDate,
+      rangeDate,
+      setRangeDate,
+      layout: DEFAULT_LAYOUT,
+    }),
+    [selectedDate, rangeDate],
   );
 
   return <ProviderContext.Provider value={value}>{children}</ProviderContext.Provider>;
