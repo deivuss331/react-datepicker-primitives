@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react';
 import { useMemo } from 'react';
-import { usePickerContext } from 'lib/primitives/PickerProvider';
+import { useContextProvider } from 'lib/primitives/ContextProvider';
 import { PickerLayouts } from 'lib/constants';
 import getDaysInMonth from 'date-fns/getDaysInMonth';
 import startOfMonth from 'date-fns/startOfMonth';
@@ -9,13 +9,14 @@ import eachMonthOfInterval from 'date-fns/eachMonthOfInterval';
 import startOfYear from 'date-fns/startOfYear';
 import endOfYear from 'date-fns/endOfYear';
 
-interface RangeDatesRendererProps {
-  renderDates: (rangeDates: Date[]) => ReactNode;
+interface SelectedRangeDatesProps {
+  render: (params: { selectedRangeDates: Date[] }) => ReactNode;
 }
 
-export default function RangeDatesRenderer({ renderDates }: RangeDatesRendererProps) {
-  const { rangeDate, layout } = usePickerContext();
-  const rangeDates = useMemo(() => {
+export default function SelectedRangeDates({ render }: SelectedRangeDatesProps) {
+  const { rangeDate, layout } = useContextProvider();
+
+  const selectedRangeDates = useMemo(() => {
     switch (layout) {
       case PickerLayouts.SINGLE_MONTH: {
         const startOfRangeMonth = startOfMonth(rangeDate);
@@ -41,5 +42,5 @@ export default function RangeDatesRenderer({ renderDates }: RangeDatesRendererPr
     }
   }, [rangeDate, layout]);
 
-  return renderDates(rangeDates);
+  return render({ selectedRangeDates });
 }

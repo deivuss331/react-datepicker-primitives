@@ -1,50 +1,59 @@
-import type { ButtonHTMLAttributes, ForwardedRef } from 'react';
-import { useCallback, forwardRef } from 'react';
-import { usePickerContext } from 'lib/primitives/PickerProvider';
+import type { ButtonHTMLAttributes, ReactElement } from 'react';
+import { useCallback } from 'react';
+import { useContextProvider } from 'lib/primitives/ContextProvider';
 import { PickerLayouts } from 'lib/constants';
 import subMonths from 'date-fns/subMonths';
 import subYears from 'date-fns/subYears';
 
-function PreviousRangeButton(
-  { onClick, ...restProps }: ButtonHTMLAttributes<HTMLButtonElement>,
-  ref: ForwardedRef<HTMLButtonElement>,
-) {
-  const { setRangeDate, layout } = usePickerContext();
+type GetPreviousRangeButtonProps = (
+  props?: ButtonHTMLAttributes<HTMLButtonElement>,
+) => ButtonHTMLAttributes<HTMLButtonElement>;
 
-  const handleSetPreviousRange = useCallback(() => {
-    setRangeDate((prevRangeDate) => {
-      switch (layout) {
-        case PickerLayouts.SINGLE_MONTH: {
-          return subMonths(prevRangeDate, 1);
-        }
-
-        case PickerLayouts.MONTHS_IN_YEAR: {
-          return subYears(prevRangeDate, 1);
-        }
-
-        case PickerLayouts.YEARS: {
-          return prevRangeDate; // ?? TODO
-        }
-
-        default: {
-          throw new Error('Unsupported layout: "%s"', layout);
-        }
-      }
-    });
-  }, [setRangeDate, layout]);
-
-  // TODO a11y
-  return (
-    <button
-      ref={ref}
-      type="button"
-      onClick={(...args) => {
-        handleSetPreviousRange();
-        onClick?.(...args);
-      }}
-      {...restProps}
-    />
-  );
+interface PreviousRangeButtonProps {
+  render: (params: {
+    getPreviousRangeButtonProps: GetPreviousRangeButtonProps;
+  }) => ReactElement<HTMLButtonElement>;
 }
 
-export default forwardRef(PreviousRangeButton);
+export default function PreviousRangeButton({ render }: PreviousRangeButtonProps) {
+  const { setRangeDate, layout } = useContextProvider();
+
+  // TODO a11y
+  const getPreviousRangeButtonProps = useCallback<GetPreviousRangeButtonProps>(
+    ({ onClick, ...restProps } = {}) => ({
+      ...restProps,
+      onClick: (...args) => {
+        setRangeDate((prevRangeDate) => getPreviousRangeDate({ rangeDate: prevRangeDate, layout }));
+        onClick?.(...args);
+      },
+    }),
+    [setRangeDate, layout],
+  );
+
+  return render({ getPreviousRangeButtonProps });
+}
+
+interface GetPreviousRangeDateParams {
+  rangeDate: Date;
+  layout: PickerLayouts;
+}
+
+const getPreviousRangeDate = ({ rangeDate, layout }: GetPreviousRangeDateParams) => {
+  switch (layout) {
+    case PickerLayouts.SINGLE_MONTH: {
+      return subMonths(rangeDate, 1);
+    }
+
+    case PickerLayouts.MONTHS_IN_YEAR: {
+      return subYears(rangeDate, 1);
+    }
+
+    case PickerLayouts.YEARS: {
+      return rangeDate; // ?? TODO
+    }
+
+    default: {
+      throw new Error('Unsupported layout: "%s"', layout);
+    }
+  }
+};
