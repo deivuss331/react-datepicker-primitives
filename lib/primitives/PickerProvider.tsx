@@ -5,8 +5,8 @@ import { __DEV_MODE__, PickerLayouts } from 'lib/constants';
 const DEFAULT_LAYOUT = PickerLayouts.SINGLE_MONTH;
 
 interface PickerProviderCtxValue {
-  selectedDate: Date | null;
-  setSelectedDate: Dispatch<SetStateAction<PickerProviderCtxValue['selectedDate']>>;
+  selected: ProviderProps['selected'];
+  onChange: ProviderProps['onChange'];
   rangeDate: Date;
   setRangeDate: Dispatch<SetStateAction<PickerProviderCtxValue['rangeDate']>>;
   layout: PickerLayouts;
@@ -19,22 +19,23 @@ if (__DEV_MODE__) {
 }
 
 interface ProviderProps {
+  selected: Date | null;
+  onChange: (selected: ProviderProps['selected']) => void;
   children: ReactNode | ReactNode[];
 }
 
-export default function PickerProvider({ children }: ProviderProps) {
-  const [selectedDate, setSelectedDate] = useState(new Date());
+export default function PickerProvider({ selected, onChange, children }: ProviderProps) {
   const [rangeDate, setRangeDate] = useState(new Date());
 
   const value = useMemo(
     () => ({
-      selectedDate,
-      setSelectedDate,
+      selected,
+      onChange,
       rangeDate,
       setRangeDate,
       layout: DEFAULT_LAYOUT,
     }),
-    [selectedDate, rangeDate],
+    [selected, onChange, rangeDate],
   );
 
   return <ProviderContext.Provider value={value}>{children}</ProviderContext.Provider>;
